@@ -77,5 +77,6 @@ int PiSerial_Receive(unsigned char* data, int len)
         int rlen = read(handle, &data[lenRCV], len - lenRCV);
         lenRCV += rlen;
     }
+    tcflush(handle, TCIFLUSH);
     return lenRCV;
 }
