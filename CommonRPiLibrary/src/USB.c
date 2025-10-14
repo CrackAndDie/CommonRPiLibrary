@@ -19,10 +19,26 @@ int Init_PiSerial(const char* path, int baud_)
 
     if (handle < 0)
         return 1; // error
+
+    speed_t speed;
+    switch(baud_) {
+        case 9600: speed = B9600; break;
+        case 19200: speed = B19200; break;
+        case 38400: speed = B38400; break;
+        case 57600: speed = B57600; break;
+        case 115200: speed = B115200; break;
+        case 230400: speed = B230400; break;
+        case 460800: speed = B460800; break;
+        case 500000: speed = B500000; break;
+        default: speed = B115200;
+    }
+    cfsetispeed(&tio, speed);
+    cfsetospeed(&tio, speed);
+
     tio.c_cflag = CS8 | CLOCAL | CREAD;
-    tio.c_oflag &= ~(OPOST | ONLCR | OCRNL);
-    tio.c_iflag &= ~(INLCR | IGNCR | ICRNL | IGNBRK | IUCLC | PARMRK);
-    tio.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN | ECHOCTL | ECHOKE);
+    tio.c_oflag = 0;
+    tio.c_iflag = 0;
+    tio.c_lflag = 0;
 
     tio.c_cflag &= ~(CSTOPB); // stopbit one
     tio.c_iflag &= ~(INPCK | ISTRIP);
@@ -30,11 +46,12 @@ int Init_PiSerial(const char* path, int baud_)
     
     tio.c_cc[VMIN] = 0;
     tio.c_cc[VTIME] = 0;
-    ioctl(handle, TCSETS, &tio);
     
-    // flush buffer
-    ioctl(handle, TCFLSH, TCIOFLUSH);
-
+    if(tcsetattr(handle, TCSANOW, &tio) != 0) {
+        return 1;
+    }
+    
+    tcflush(handle, TCIOFLUSH);
     return 0;
 }
 
@@ -58,6 +75,10 @@ int PiSerial_Receive(unsigned char* data, int len)
     while (lenRCV < len)
     {
         int rlen = read(handle, &data[lenRCV], len - lenRCV);
+        if (rlen <= 0)
+        {
+            break;
+        }
         lenRCV += rlen;
     }
     ioctl(handle, TCFLSH, TCIFLUSH);
