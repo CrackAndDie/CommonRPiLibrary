@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <termios.h>
 
 #include "USB.h"
 
@@ -65,7 +66,7 @@ void Kill_PiSerial()
 bool PiSerial_Send(unsigned char* data, int len)
 {
     int rlen = write(handle, data, len);
-    ioctl(handle, TCFLSH, TCOFLUSH);
+    tcdrain(handle);
     return(rlen == len);
 }
 
@@ -75,12 +76,7 @@ int PiSerial_Receive(unsigned char* data, int len)
     while (lenRCV < len)
     {
         int rlen = read(handle, &data[lenRCV], len - lenRCV);
-        if (rlen <= 0)
-        {
-            break;
-        }
         lenRCV += rlen;
     }
-    ioctl(handle, TCFLSH, TCIFLUSH);
     return lenRCV;
 }
