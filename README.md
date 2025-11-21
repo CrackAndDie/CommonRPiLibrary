@@ -3,7 +3,7 @@
 2. ```cd CommonRPiLibrary/CommonRPiLibrary```
 3. ```mkdir build```
 4. ```cd build```
-5. ```cmake ../CMakeLists.txt```
+5. ```cmake ..```
 6. ```make```
 
 ### If you have no Java installed
