@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <jni.h>
 
-static const char *JNIT_CLASS = "io/github/crackanddie/jni/JavaWrapper";
+static const char *JNIT_CLASS = "io/github/softv/internal/common/JavaWrapper";
 
 static jbyteArray Java_ReadWriteSPI(JNIEnv *env, jobject obj, jbyteArray data, jint length)
 {
@@ -81,8 +81,8 @@ static void Java_StopUSB(JNIEnv *env, jobject obj)
 static JNINativeMethod funcs[] = {
 	{ "Java_ReadWriteSPI", "([BI)[B", (void *)&Java_ReadWriteSPI },
 	{ "Java_ReadWriteUSB", "([BI)[B", (void *)&Java_ReadWriteUSB },
-	{ "Java_StartSPI", "()V", (void *)&Java_StartSPI },
-	{ "Java_StartUSB", "()V", (void *)&Java_StartUSB },
+	{ "Java_StartSPI", "(Ljava/lang/String;III)I", (void *)&Java_StartSPI },
+	{ "Java_StartUSB", "(Ljava/lang/String;I)I", (void *)&Java_StartUSB },
 	{ "Java_StopSPI", "()V", (void *)&Java_StopSPI },
 	{ "Java_StopUSB", "()V", (void *)&Java_StopUSB }
 };

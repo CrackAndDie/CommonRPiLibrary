@@ -1,4 +1,4 @@
-package io.github.crackanddie;
+package io.github.softv.internal.common;
 
 public class JavaWrapper
 {
